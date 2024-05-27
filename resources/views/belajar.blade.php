@@ -28,6 +28,7 @@
             <th>Nama Lengkap</th>
             <th>Jenis Kelamin</th>
             <th>Golongan Darah</th>
+            <th colspan="2">Aksi</th>
         </tr>
         @foreach ($siswa as $row)
         <tr>
@@ -35,6 +36,14 @@
             <td>{{ $row->nama_lengkap }}</td>
             <td>{{ $row->jk }}</td>
             <td>{{ $row->golongan_darah }}</td>
+            <td><a href="{{ url('/siswa/edit/' . $row->id )}}">Edit</a></td>
+            <td>
+                <form action="{{ url('/siswa', $row->id) }}" method="POST">
+                    @method('DELETE')
+                    @csrf
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
         </tr>
         @endforeach
     </table>

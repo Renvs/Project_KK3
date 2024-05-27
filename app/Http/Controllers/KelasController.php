@@ -23,7 +23,15 @@ class KelasController extends Controller
         return view('kelas.kelasForm');
     }
 
-    function store( Request $request ) {
+    function store(Request $request) {
+
+        $request->validate([
+            'nama_kelas' => 'max:10|required|string',
+            'jurusan' => 'max:50|required|string',
+            'lokasi_ruangan' => 'required|string',
+            'nama_wali_kelas' => 'required|string',
+        ]);
+
         $input = $request->all();
         unset($input['_token']);
         $status = DB::table('t_kelas')->insert($input);
@@ -31,6 +39,39 @@ class KelasController extends Controller
             return redirect('/kelas')->with('Berhasil', 'Data Kelas Berhasil Ditambahkan');
         } else {
             return redirect('/kelas/create')->with('Gagal', 'Data Kelas Gagal Ditambahkan');
+        }
+    }
+
+    function edit(Request $request, $id) {
+        $kelas = DB::table('t_kelas')->find($id);
+        return view('kelas.kelasForm', compact('kelas'));
+    }
+
+    function update(Request $request, $id) {
+        $request->validate([
+            'nama_kelas' => 'max:10|required|string',
+            'jurusan' => 'max:50|required|string',
+            'lokasi_ruangan' => 'required|string',
+            'nama_wali_kelas' => 'required|string',
+        ]);
+
+        $input = $request->all();
+        unset($input['_token']);
+        unset($input['_method']);
+        $status = DB::table('t_kelas')->where('id', $id)->update($input);
+        if ($status) {
+            return redirect('/kelas')->with('Berhasil', 'Data Kelas Berhasil Diubah');
+        } else {
+            return redirect('/kelas/edit/'.$id)->with('Gagal', 'Data Kelas Gagal Diubah');
+        }
+    }
+
+    function destroy($id) {
+        $status = DB::table('t_kelas')->where('id', $id)->delete();
+        if ($status) {
+            return redirect('/kelas')->with('Berhasil', 'Data Kelas Berhasil Dihapus');
+        } else {
+            return redirect('/kelas')->with('Gagal', 'Data Kelas Gagal Dihapus');
         }
     }
 }
